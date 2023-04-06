@@ -16,16 +16,12 @@ namespace Data.Models
         [Required]
         public string LastName { get; set; }
 
-        [NotMapped]
         public int Age { get; set; }
 
-        [NotMapped]
         public string Gender { get; set; }
 
-        [NotMapped]
         public string Address { get; set; }
 
-        [NotMapped]
         public string PhoneNumber { get; set; }
 
         [Required]

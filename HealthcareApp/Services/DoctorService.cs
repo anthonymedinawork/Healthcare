@@ -4,7 +4,6 @@ using HealthcareApp.Data;
 using HealthcareApp.Repositories.Interfaces;
 using HealthcareApp.Services.Interfaces;
 using HealthcareApp.Services.ViewModels;
-using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -24,7 +23,9 @@ namespace HealthcareApp.Services
         public async Task CreateAsync(DoctorViewModel model)
         {
             Doctor doctor = _mapper.Map<Doctor>(model);
+
             doctor.Id = Guid.NewGuid().ToString();
+
             await _repository.CreateAsync(doctor);
         }
 
@@ -32,7 +33,7 @@ namespace HealthcareApp.Services
         {
             if(string.IsNullOrEmpty(id))
             {
-                throw new ArgumentNullException("Id can't be null");
+                throw new KeyNotFoundException(nameof(id));
             }
             await _repository.DeleteAsync(id);
         }
@@ -40,19 +41,23 @@ namespace HealthcareApp.Services
         public async Task<List<DoctorViewModel>> GetAllAsync()
         {
             var doctors = await _repository.GetAll().ToListAsync();
+
             return _mapper.Map<List<DoctorViewModel>>(doctors);
         }
 
         public async Task<List<DoctorViewModel>> GetAllAsync(Expression<Func<DoctorViewModel, bool>> filter)
         {
             var doctorFilter = _mapper.Map<Expression<Func<Doctor, bool>>>(filter);
+
             List<Doctor> doctors = await _repository.GetAll(doctorFilter).ToListAsync();
+
             return _mapper.Map<List<DoctorViewModel>>(doctors);
         }
 
         public async Task<DoctorViewModel> GetByIdAsync(string id)
         {
             Doctor? doctor = await _repository.GetByIdAsync(id);
+
             if (doctor is null)
             {
                 throw new ArgumentNullException("No such doctor exists!");
@@ -63,6 +68,7 @@ namespace HealthcareApp.Services
         public async Task UpdateAsync(DoctorViewModel model)
         {
             Doctor doctor = _mapper.Map<Doctor>(model);
+
             await _repository.UpdateAsync(doctor);
         }
     }

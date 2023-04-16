@@ -22,6 +22,7 @@ namespace HealthcareApp.Services
         public async Task CreateAsync(PatientViewModel model)
         {
             Patient patient = _mapper.Map<Patient>(model);
+
             await _repository.CreateAsync(patient);
         }
 
@@ -29,7 +30,7 @@ namespace HealthcareApp.Services
         {
             if (string.IsNullOrEmpty(id))
             {
-                throw new ArgumentNullException("Id can't be null");
+                throw new KeyNotFoundException(nameof(id));
             }
             await _repository.DeleteAsync(id);
         }
@@ -37,19 +38,23 @@ namespace HealthcareApp.Services
         public async Task<List<PatientViewModel>> GetAllAsync()
         {
             var patients = await _repository.GetAll().ToListAsync();
+
             return _mapper.Map<List<PatientViewModel>>(patients);
         }
 
         public async Task<List<PatientViewModel>> GetAllAsync(Expression<Func<PatientViewModel, bool>> filter)
         {
             var patientFilter = _mapper.Map<Expression<Func<Patient, bool>>>(filter);
+
             List<Patient> patients = await _repository.GetAll(patientFilter).ToListAsync();
+
             return _mapper.Map<List<PatientViewModel>>(patients);
         }
 
         public async Task<PatientViewModel> GetByIdAsync(string id)
         {
             Patient? patient = await _repository.GetByIdAsync(id);
+
             if (patient is null)
             {
                 throw new ArgumentNullException("No such patient exists!");
@@ -60,6 +65,7 @@ namespace HealthcareApp.Services
         public async Task UpdateAsync(PatientViewModel model)
         {
             Patient patient = _mapper.Map<Patient>(model);
+
             await _repository.UpdateAsync(patient);
         }
     }

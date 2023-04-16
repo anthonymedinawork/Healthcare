@@ -23,6 +23,7 @@ namespace HealthcareApp.Services
         public async Task CreateAsync(MedicationViewModel model)
         {
             Medication med = _mapper.Map<Medication>(model);
+
             await _repository.CreateAsync(med);
         }
 
@@ -30,7 +31,7 @@ namespace HealthcareApp.Services
         {
             if (string.IsNullOrEmpty(id))
             {
-                throw new ArgumentNullException("Id can't be null");
+                throw new KeyNotFoundException(nameof(id));
             }
             await _repository.DeleteAsync(id);
         }
@@ -38,19 +39,23 @@ namespace HealthcareApp.Services
         public async Task<List<MedicationViewModel>> GetAllAsync()
         {
             var meds = await _repository.GetAll().ToListAsync();
+
             return _mapper.Map<List<MedicationViewModel>>(meds);
         }
 
         public async Task<List<MedicationViewModel>> GetAllAsync(Expression<Func<MedicationViewModel, bool>> filter)
         {
             var medFilter = _mapper.Map<Expression<Func<Medication, bool>>>(filter);
+
             List<Medication> meds = await _repository.GetAll(medFilter).ToListAsync();
+
             return _mapper.Map<List<MedicationViewModel>>(meds);
         }
 
         public async Task<MedicationViewModel> GetByIdAsync(string id)
         {
             Medication? med = await _repository.GetByIdAsync(id);
+
             if (med is null)
             {
                 throw new ArgumentNullException("No such medication exists!");
@@ -61,6 +66,7 @@ namespace HealthcareApp.Services
         public async Task UpdateAsync(MedicationViewModel model)
         {
             Medication med = _mapper.Map<Medication>(model);
+
             await _repository.UpdateAsync(med);
         }
     }

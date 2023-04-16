@@ -22,6 +22,7 @@ namespace HealthcareApp.Services
         public async Task CreateAsync(AttendanceViewModel model)
         {
             Attendance attendance = _mapper.Map<Attendance>(model);
+
             await _repository.CreateAsync(attendance);
         }
 
@@ -29,7 +30,7 @@ namespace HealthcareApp.Services
         {
             if (string.IsNullOrEmpty(id))
             {
-                throw new ArgumentNullException("Id can't be null");
+                throw new KeyNotFoundException(nameof(id));
             }
             await _repository.DeleteAsync(id);
         }
@@ -37,19 +38,23 @@ namespace HealthcareApp.Services
         public async Task<List<AttendanceViewModel>> GetAllAsync()
         {
             var attendances = await _repository.GetAll().ToListAsync();
+
             return _mapper.Map<List<AttendanceViewModel>>(attendances);
         }
 
         public async Task<List<AttendanceViewModel>> GetAllAsync(Expression<Func<AttendanceViewModel, bool>> filter)
         {
             var attendanceFilter = _mapper.Map<Expression<Func<Attendance, bool>>>(filter);
+
             List<Attendance> attendances = await _repository.GetAll(attendanceFilter).ToListAsync();
+
             return _mapper.Map<List<AttendanceViewModel>>(attendances);
         }
 
         public async Task<AttendanceViewModel> GetByIdAsync(string id)
         {
             Attendance? attendance = await _repository.GetByIdAsync(id);
+
             if (attendance is null)
             {
                 throw new ArgumentNullException("No such attendance exists!");
@@ -60,6 +65,7 @@ namespace HealthcareApp.Services
         public async Task UpdateAsync(AttendanceViewModel model)
         {
             Attendance attendance = _mapper.Map<Attendance>(model);
+
             await _repository.UpdateAsync(attendance);
         }
     }

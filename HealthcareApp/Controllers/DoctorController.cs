@@ -16,9 +16,14 @@ namespace HealthcareApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             List<DoctorViewModel> doctors = await _service.GetAllAsync();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                doctors = doctors.Where(s => s.FirstName!.Contains(searchString)).ToList();
+            }
 
             return View(doctors);
         }
@@ -49,16 +54,13 @@ namespace HealthcareApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(DoctorViewModel doctor)
         {
-            try
+            if (ModelState.IsValid)
             {
                 await _service.CreateAsync(doctor);
 
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception)
-            {
-                return View(doctor);
-            }
+            return View(doctor);
         }
 
         [HttpGet]
@@ -72,16 +74,13 @@ namespace HealthcareApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(DoctorViewModel doctor)
         {
-            try
+            if (ModelState.IsValid)
             {
                 await _service.UpdateAsync(doctor);
 
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception)
-            {
-                return View(doctor);
-            }
+            return View(doctor);
         }
 
         [HttpGet]

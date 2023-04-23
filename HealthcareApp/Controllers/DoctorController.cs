@@ -52,6 +52,7 @@ namespace HealthcareApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DoctorViewModel doctor)
         {
             if (ModelState.IsValid)
@@ -72,6 +73,7 @@ namespace HealthcareApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(DoctorViewModel doctor)
         {
             if (ModelState.IsValid)

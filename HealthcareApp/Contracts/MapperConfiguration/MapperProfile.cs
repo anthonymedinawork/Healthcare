@@ -11,12 +11,7 @@ namespace HealthcareApp.Contracts.MapperConfiguration
         {
             CreateMap<Doctor, DoctorViewModel>().ReverseMap();
 
-            CreateMap<Patient, PatientViewModel>().ReverseMap()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
-                .ForMember(dest => dest.Address, opt => opt.Ignore())
-                .ForMember(dest => dest.Gender, opt => opt.Ignore())
-                .ForMember(dest => dest.Age, opt => opt.Ignore())
-                .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore());
+            CreateMap<Patient, PatientViewModel>().ReverseMap();
 
             CreateMap<Appointment, AppointmentViewModel>().ReverseMap()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()));

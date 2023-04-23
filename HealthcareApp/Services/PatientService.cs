@@ -21,6 +21,8 @@ namespace HealthcareApp.Services
 
         public async Task CreateAsync(PatientViewModel model)
         {
+            model.Id = Guid.NewGuid().ToString();
+
             Patient patient = _mapper.Map<Patient>(model);
 
             await _repository.CreateAsync(patient);

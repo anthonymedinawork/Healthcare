@@ -11,9 +11,8 @@ namespace HealthcareApp.Services.ViewModels
         public string Gender { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
-        public ICollection<AppointmentViewModel> Appointments { get; set; }
-        public ICollection<Attendance> Attendances { get; set; }
+        public string Email { get; set; }
+        public DoctorsSelectListModel DoctorsList { get; set; }
         public string PersonalDoctorId { get; set; }
-        public DoctorViewModel PersonalDoctor { get; set; }
     }
 }

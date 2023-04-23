@@ -2,16 +2,19 @@
 using HealthcareApp.Services.Interfaces;
 using HealthcareApp.Services.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HealthcareApp.Controllers
 {
     public class PatientController : Controller
     {
         private readonly IPatientService _service;
+        private readonly IDoctorService _doctorService;
 
-        public PatientController(IPatientService service)
+        public PatientController(IPatientService service, IDoctorService doctorService)
         {
             _service = service;
+            _doctorService = doctorService;
         }
 
         [HttpGet]
@@ -40,21 +43,36 @@ namespace HealthcareApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var doctors = await _doctorService.GetAllAsync();
+
+            var model = new PatientViewModel();
+            model.DoctorsList = new DoctorsSelectListModel();
+            model.DoctorsList.DoctorsSelectList = new List<SelectListItem>();
+
+            foreach (var item in doctors)
+            {
+                model.DoctorsList.DoctorsSelectList.Add(new SelectListItem()
+                {
+                    Text = item.FirstName + " " + item.LastName,
+                    Value = item.Id
+                });
+            }
+
+            return View(model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PatientViewModel patient)
         {
-            if (ModelState.IsValid)
-            {
-                await _service.CreateAsync(patient);
+            var selectedDoctor = patient.DoctorsList.SelectedDoctor;
+            patient.PersonalDoctorId = selectedDoctor;
+            
+            await _service.CreateAsync(patient);
 
-                return RedirectToAction(nameof(Index));
-            }
-            return View(patient);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
@@ -62,19 +80,34 @@ namespace HealthcareApp.Controllers
         {
             var patient = await _service.GetByIdAsync(Id);
 
+            var doctors = await _doctorService.GetAllAsync();
+
+            patient.DoctorsList = new DoctorsSelectListModel();
+            patient.DoctorsList.SelectedDoctor = patient.PersonalDoctorId;
+            patient.DoctorsList.DoctorsSelectList = new List<SelectListItem>();
+
+            foreach (var item in doctors)
+            {
+                patient.DoctorsList.DoctorsSelectList.Add(new SelectListItem()
+                {
+                    Text = item.FirstName + " " + item.LastName,
+                    Value = item.Id
+                });
+            }
+
             return View(patient);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(PatientViewModel patient)
         {
-            if (ModelState.IsValid)
-            {
-                await _service.UpdateAsync(patient);
+            var selectedDoctor = patient.DoctorsList.SelectedDoctor;
+            patient.PersonalDoctorId = selectedDoctor;
 
-                return RedirectToAction(nameof(Index));
-            }
-            return View(patient);
+            await _service.UpdateAsync(patient);
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]

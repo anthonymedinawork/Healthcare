@@ -55,13 +55,9 @@ namespace HealthcareApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DoctorViewModel doctor)
         {
-            if (ModelState.IsValid)
-            {
-                await _service.CreateAsync(doctor);
+            await _service.CreateAsync(doctor);
 
-                return RedirectToAction(nameof(Index));
-            }
-            return View(doctor);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]

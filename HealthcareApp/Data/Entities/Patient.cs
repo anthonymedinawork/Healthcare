@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Data.Models
+﻿namespace Data.Models
 {
     public class Patient : Person
     {
@@ -13,5 +6,7 @@ namespace Data.Models
         public ICollection<Attendance> Attendances { get; set; }
         public string PersonalDoctorId { get; set; }
         public Doctor PersonalDoctor { get; set; }
+        public string UserAccountId { get; set; }
+        public User UserAccount { get; set; }
     }
 }

@@ -1,0 +1,15 @@
+﻿@using HealthcareApp.Services.ViewModels;
+@model PatientViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div>
+    <p>Are you sure you want to delete @Model.FirstName @Model.LastName?</p>
+    <form method ="post" asp-action="DeleteConfirmation">
+        <a asp-action="Index" type="button" class="btn btn-secondary">Cancel</a>
+        <input type ="hidden" value="@Model.Id" asp-for="Id"/>
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+</div

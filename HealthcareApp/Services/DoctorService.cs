@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Data.Models;
-using HealthcareApp.Data;
+using HealthcareApp.Data.Enums;
 using HealthcareApp.Repositories.Interfaces;
 using HealthcareApp.Services.Interfaces;
 using HealthcareApp.Services.ViewModels;
@@ -12,12 +12,14 @@ namespace HealthcareApp.Services
     public class DoctorService : IDoctorService
     {
         private readonly IDoctorRepository _repository;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public DoctorService(IDoctorRepository repository, IMapper mapper)
+        public DoctorService(IDoctorRepository repository, IMapper mapper, IUserService userService)
         {
             this._repository = repository;
             this._mapper = mapper;
+            this._userService = userService;
         }
 
         public async Task CreateAsync(DoctorViewModel model)
@@ -26,6 +28,19 @@ namespace HealthcareApp.Services
 
             doctor.Id = Guid.NewGuid().ToString();
 
+            var account = await _userService.CreateFromViewAsync(new UserViewModel()
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                UserEmail = model.Email,
+                Password = string.Format($"{model.FirstName.ToLower()}{model.LastName}{model.Age}@"),
+                Role = Role.Moderator
+            }, 
+            Role.Moderator
+            );
+
+            doctor.UserAccountId = account.Id;
+            
             await _repository.CreateAsync(doctor);
         }
 
@@ -60,7 +75,18 @@ namespace HealthcareApp.Services
 
             if (doctor is null)
             {
-                throw new ArgumentNullException("No such doctor exists!");
+                throw new KeyNotFoundException(nameof(id));
+            }
+            return _mapper.Map<DoctorViewModel>(doctor);
+        }
+
+        public async Task<DoctorViewModel> GetByUserAccountIdAsync(string id)
+        {
+            Doctor? doctor = await _repository.GetByUserAccountIdAsync(id);
+
+            if (doctor is null)
+            {
+                throw new KeyNotFoundException(nameof(id));
             }
             return _mapper.Map<DoctorViewModel>(doctor);
         }

@@ -8,6 +8,7 @@ namespace HealthcareApp.Services.Interfaces
         Task UpdateAsync(DoctorViewModel doctor);
         Task DeleteAsync(string id);
         Task<DoctorViewModel> GetByIdAsync(string id);
+        Task<DoctorViewModel> GetByUserAccountIdAsync(string id);
         Task<List<DoctorViewModel>> GetAllAsync();
     }
 }

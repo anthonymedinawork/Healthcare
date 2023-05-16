@@ -1,0 +1,90 @@
+﻿@using Data.Models;
+@using HealthcareApp.Services.ViewModels
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+
+@model List<AppointmentViewModel>
+@{
+    ViewData["Title"] = "List appointments";
+}
+
+@if(Context.User.IsInRole("User"))
+{
+    <div class="mt-5 mb-2">
+        <a asp-action="Create">Create new</a>
+    </div>
+}
+
+
+<table class="table table-striped">
+    <tr>
+        <th>
+            Patient name
+        </th>
+        <th>
+            Doctor name
+        </th>
+        <th>
+            Approved
+        </th>
+        <th>
+            Date
+        </th>
+        <th>
+            Actions
+        </th>
+    </tr>
+    @foreach (var appointment in Model)
+    {
+        if(User.IsInRole("User") || User.IsInRole("Admin"))
+        {
+            <tr> 
+                <td>
+                    @appointment.PatientName
+                </td>
+                <td>
+                    @appointment.DoctorName
+                </td>
+                <td>
+                    @appointment.IsApproved
+                </td>
+                <td>
+                    @appointment.Date
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@appointment.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@appointment.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        if(User.IsInRole("Moderator"))
+        {
+            <tr> 
+                <td>
+                    @appointment.PatientName
+                </td>
+                <td>
+                    @appointment.DoctorName
+                </td>
+                <td>
+                    @if(@appointment.IsApproved == false)
+                    {
+                        <a asp-action="Approve" asp-route-id="@appointment.Id" type="button" class="btn btn-primary">Approve</a>
+                        <a asp-action="Delete" asp-route-id="@appointment.Id" type="button" class="btn btn-secondary">Delete</a>
+                    }
+                    @appointment.IsApproved
+                </td>
+                <td>
+                    @appointment.Date
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@appointment.Id">Details</a>
+                    @if(@appointment.IsApproved == true)
+                    {
+                        <a asp-action="Delete" asp-route-id="@appointment.Id">Delete</a>
+                    }   
+                </td>
+            </tr>
+        }
+    }
+</table>

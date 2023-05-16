@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthcareApp.Migrations
 {
     [DbContext(typeof(HealthcareAppDbContext))]
-    [Migration("20230419080151_AddUser")]
-    partial class AddUser
+    [Migration("20230429141540_ChangeColumnName")]
+    partial class ChangeColumnName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -116,7 +116,14 @@ namespace HealthcareApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserAccountId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserAccountId")
+                        .IsUnique();
 
                     b.ToTable("Doctors", (string)null);
                 });
@@ -157,9 +164,16 @@ namespace HealthcareApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserAccountId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PersonalDoctorId");
+
+                    b.HasIndex("UserAccountId")
+                        .IsUnique();
 
                     b.ToTable("Patients", (string)null);
                 });
@@ -404,7 +418,10 @@ namespace HealthcareApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -443,6 +460,17 @@ namespace HealthcareApp.Migrations
                     b.Navigation("Doctor");
                 });
 
+            modelBuilder.Entity("Data.Models.Doctor", b =>
+                {
+                    b.HasOne("Data.Models.User", "UserAccount")
+                        .WithOne()
+                        .HasForeignKey("Data.Models.Doctor", "UserAccountId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.Navigation("UserAccount");
+                });
+
             modelBuilder.Entity("Data.Models.Patient", b =>
                 {
                     b.HasOne("Data.Models.Doctor", "PersonalDoctor")
@@ -451,7 +479,15 @@ namespace HealthcareApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Data.Models.User", "UserAccount")
+                        .WithOne()
+                        .HasForeignKey("Data.Models.Patient", "UserAccountId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
                     b.Navigation("PersonalDoctor");
+
+                    b.Navigation("UserAccount");
                 });
 
             modelBuilder.Entity("HealthcareApp.Data.Entities.Medication", b =>

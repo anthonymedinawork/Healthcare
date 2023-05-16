@@ -2,16 +2,13 @@
 using HealthcareApp.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using System.Numerics;
 
 namespace HealthcareApp.Data
 {
     public class HealthcareAppDbContext : IdentityDbContext
     {
-        public HealthcareAppDbContext(DbContextOptions<HealthcareAppDbContext> options) : base(options)
-        {
-        }
+        public HealthcareAppDbContext(DbContextOptions<HealthcareAppDbContext> options) 
+            : base(options) { }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Patient> Patients { get; set; }
@@ -56,6 +53,11 @@ namespace HealthcareApp.Data
                 .HasForeignKey(a => a.DoctorId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            modelBuilder.Entity<Doctor>()
+                .HasOne<User>(p => p.UserAccount)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Patient
             modelBuilder.Entity<Patient>()
                 .HasMany<Appointment>(p => p.Appointments)
@@ -65,6 +67,11 @@ namespace HealthcareApp.Data
 
             modelBuilder.Entity<Patient>()
                 .HasMany<Attendance>(p => p.Attendances);
+
+            modelBuilder.Entity<Patient>()
+                .HasOne<User>(p => p.UserAccount)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Patient>()
                 .HasOne<Doctor>(p => p.PersonalDoctor)

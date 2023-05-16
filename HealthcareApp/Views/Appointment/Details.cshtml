@@ -1,0 +1,27 @@
+﻿@using HealthcareApp.Services.ViewModels;
+@model AppointmentViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1 class="mb-5">Details</h1>
+
+<table class="table">
+  <tbody>
+    <tr>
+      <th scope="row">Patient name:</th>
+      <td>@Model.PatientName</td>
+    </tr>
+    <tr>
+      <th scope="row">Doctor name:</th>
+      <td>@Model.DoctorName</td>
+    </tr>
+    <tr>
+        <th scope="row">Approved:</th>
+        <td>@Model.IsApproved</td>
+    </tr>
+   </tbody>
+</table>
+
+<a asp-action="Index" type="button" class="btn btn-secondary">Back to List</a>

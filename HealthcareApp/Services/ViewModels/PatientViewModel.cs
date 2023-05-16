@@ -12,6 +12,7 @@ namespace HealthcareApp.Services.ViewModels
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
+        public string UserAccountId { get; set; }
         public DoctorsSelectListModel DoctorsList { get; set; }
         public string PersonalDoctorId { get; set; }
     }

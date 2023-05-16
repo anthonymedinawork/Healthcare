@@ -1,8 +1,4 @@
-﻿using Data.Models;
-using HealthcareApp.Data.Entities;
-using System.ComponentModel.DataAnnotations;
-
-namespace HealthcareApp.Services.ViewModels
+﻿namespace HealthcareApp.Services.ViewModels
 {
     public class AttendanceViewModel
     {

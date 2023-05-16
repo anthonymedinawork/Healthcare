@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using HealthcareApp.Contracts.Extensions;
 using HealthcareApp.Services.Interfaces;
 using HealthcareApp.Services.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -10,17 +11,19 @@ namespace HealthcareApp.Controllers
     {
         private readonly IPatientService _service;
         private readonly IDoctorService _doctorService;
+        private readonly string username;
 
-        public PatientController(IPatientService service, IDoctorService doctorService)
+        public PatientController(IPatientService service, IDoctorService doctorService, IHttpContextAccessor http)
         {
             _service = service;
             _doctorService = doctorService;
+            username = http.GetRequesterId();
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            List<PatientViewModel> patients = await _service.GetAllAsync();
+            List<PatientViewModel> patients = await _service.GetAllAsync(username);
 
             return View(patients);
         }

@@ -1,0 +1,54 @@
+﻿@using HealthcareApp.Services.ViewModels;
+@model AttendanceViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4 class="mt-5">Attendance</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-2">
+                <label asp-for="PatientsList.SelectedPatient" class="control-label">Please select the patient</label>
+                <select class="form-select" asp-for="PatientsList.SelectedPatient" asp-items="Model.PatientsList.PatientsSelectList"></select>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" value=@DateTime.Today />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <form asp-controller="Attendance" asp-action="Create" method="get">
+                    <p>
+                        Diagnosis: <input type="text" name="SearchString" />
+                        <input type="submit" value="Search" />
+                    </p>
+                </form>
+            </div>
+            
+            <div class="form-group mb-2">
+                <label asp-for="MedicationsList.SelectedMedication" class="control-label">Please select the prescribed medication</label>
+                <select class="form-select" asp-for="MedicationsList.SelectedMedication" asp-items="Model.MedicationsList.MedicationsSelectList"></select>
+            </div>
+            <div class="form-group mb-2">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}

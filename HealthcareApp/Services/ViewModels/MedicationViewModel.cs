@@ -6,6 +6,7 @@ namespace HealthcareApp.Services.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public int Quantity { get; set; }
+        public string BrandName { get; set; }
+        public string Indication { get; set; }
     }
 }

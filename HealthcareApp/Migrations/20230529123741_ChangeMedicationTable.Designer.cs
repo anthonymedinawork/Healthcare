@@ -4,6 +4,7 @@ using HealthcareApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthcareApp.Migrations
 {
     [DbContext(typeof(HealthcareAppDbContext))]
-    partial class HealthcareAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230529123741_ChangeMedicationTable")]
+    partial class ChangeMedicationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,9 +194,8 @@ namespace HealthcareApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Indication")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Indication")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

@@ -1,0 +1,88 @@
+﻿@using Data.Models;
+@using HealthcareApp.Services.ViewModels;
+
+
+@model List<AttendanceViewModel>
+@{
+    ViewData["Title"] = "List attendances";
+}
+
+@if(User.IsInRole("Moderator") || User.IsInRole("Admin"))
+{
+    <div class="mt-5 mb-2">
+        <a asp-action="Create">Create new</a>
+    </div>
+}
+
+<table class="table table-striped">
+    <tr>
+        <th>
+            Patient name
+        </th>
+        <th>
+            Doctor name
+        </th>
+        <th>
+            Diagnosis
+        </th>
+        <th>
+            Medication
+        </th>
+        <th>
+            Date
+        </th>
+        <th>
+            Actions
+        </th>
+    </tr>
+    @foreach (var attendance in Model)
+    {
+        if(User.IsInRole("User"))
+        {
+            <tr> 
+                <td>
+                    @attendance.PatientName
+                </td>
+                <td>
+                    @attendance.DoctorName
+                </td>
+                <td>
+                    @attendance.Diagnosis
+                </td>
+                <td>
+                    @attendance.MedicationName
+                </td>
+                <td>
+                    @attendance.Date
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@attendance.Id">Details</a>
+                </td>
+            </tr>
+        }
+        if(User.IsInRole("Moderator") || User.IsInRole("Admin"))
+        {
+            <tr> 
+                <td>
+                    @attendance.PatientName
+                </td>
+                <td>
+                    @attendance.DoctorName
+                </td>
+                <td>
+                    @attendance.Diagnosis
+                </td>
+                <td>
+                    @attendance.MedicationName
+                </td>
+                <td>
+                    @attendance.Date
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@attendance.Id">Details</a>
+                    <a asp-action="Delete" asp-route-id="@attendance.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    }
+</table>

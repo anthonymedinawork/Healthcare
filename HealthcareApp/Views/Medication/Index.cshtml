@@ -1,0 +1,57 @@
+﻿@using HealthcareApp.Services.ViewModels;
+
+@model List<MedicationViewModel>
+@{
+    ViewData["Title"] = "List medications";
+}
+
+<form asp-controller="Medication" asp-action="LoadDb" method="post">
+    <button type="submit" class="btn btn-secondary">Load</button>
+</form>
+<br />
+<br />
+<form asp-controller="Medication" asp-action="DeleteTableData" method="post">
+    <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+
+<form asp-controller="Medication" asp-action="Index" method="get">
+    <p>
+        Indication: <input type="text" name="SearchString" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
+
+<table class="table table-striped">
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Brand name
+        </th>
+        <th>
+            Indication
+        </th>
+        <th>
+            Actions
+        </th>
+    </tr>
+    @foreach (var medication in Model)
+    {
+
+            <tr> 
+                <td>
+                @medication.Name
+                </td>
+                <td>
+                @medication.BrandName
+                </td>
+                <td>
+                @medication.Indication
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@medication.Id">Delete</a>
+                </td>
+            </tr>
+    }
+</table>

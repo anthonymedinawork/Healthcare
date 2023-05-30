@@ -1,14 +1,9 @@
 using HealthcareApp.Data;
-using HealthcareApp.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication;
-using System.ComponentModel.Design;
-using HealthcareApp.Repositories.Interfaces;
-using HealthcareApp.Repositories;
-using HealthcareApp.Services.Interfaces;
 using Data.Models;
+using HealthcareApp.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,27 +13,16 @@ builder.Services.AddDbContext<HealthcareAppDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services
+    .AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<HealthcareAppDbContext>().AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
 
-// Register repositories
+builder.AddCustomRepositories();
+builder.AddCustomServices();
 
-builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
-builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
-
-// Register services
-
-builder.Services.AddScoped<IDoctorService, DoctorService>();
-builder.Services.AddScoped<IPatientService, PatientService>();
-builder.Services.AddScoped<IAppointmentService, AppointmentService>();
-builder.Services.AddScoped<IAttendanceService, AttendanceService>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-
-// Mapper configuration
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();

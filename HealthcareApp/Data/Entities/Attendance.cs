@@ -9,12 +9,18 @@ namespace Data.Models
 
         public Doctor Doctor { get; set; }
 
+        public string PatientId { get; set; }
+
+        public Patient Patient { get; set; }
+
         [Required]
         public string Diagnosis { get; set; }
 
         [Required]
         public DateTime Date { get; set; }
 
-        public ICollection<Medication>? Medications { get; set; }
+        public string MedicationId { get; set; }
+
+        public Medication Medication { get; set; }
     }
 }

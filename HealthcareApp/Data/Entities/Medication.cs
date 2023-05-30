@@ -9,6 +9,9 @@ namespace HealthcareApp.Data.Entities
         public string Name { get; set; }
 
         [Required]
-        public int Quantity { get; set; }
+        public string BrandName { get; set; }
+
+        [Required]
+        public string Indication { get; set; }
     }
 }

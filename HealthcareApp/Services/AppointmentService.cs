@@ -7,7 +7,6 @@ using HealthcareApp.Services.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Numerics;
 
 namespace HealthcareApp.Services
 {

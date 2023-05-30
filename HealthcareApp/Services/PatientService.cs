@@ -55,22 +55,29 @@ namespace HealthcareApp.Services
             await _repository.DeleteAsync(id);
         }
 
-        public async Task<List<PatientViewModel>> GetAllAsync(string requesterName)
+        public async Task<List<PatientViewModel>> GetAllAsync(string requesterName = null)
         {
-            var user = await _userService.GetByUserNameAsync(requesterName);
-
             List<Patient> patients = new();
 
-            if (user.Role == Role.Admin)
+            if (requesterName is not null)
+            {
+                var user = await _userService.GetByUserNameAsync(requesterName);              
+
+                if (user.Role == Role.Admin)
+                {
+                    patients = await _repository.GetAll().ToListAsync();
+                }
+
+                else if (user.Role == Role.Moderator)
+                {
+                    var doctorPatientsToView = await _doctorService.GetByUserAccountIdAsync(user.Id);
+
+                    patients = await _repository.GetAll().Where(p => p.PersonalDoctorId == doctorPatientsToView.Id).ToListAsync();
+                }
+            }
+            else
             {
                 patients = await _repository.GetAll().ToListAsync();
-            }
-
-            else if (user.Role == Role.Moderator)
-            {
-                var doctorPatientsToView = await _doctorService.GetByUserAccountIdAsync(user.Id);
-
-                patients = await _repository.GetAll().Where(p => p.PersonalDoctorId == doctorPatientsToView.Id).ToListAsync();
             }
 
             return _mapper.Map<List<PatientViewModel>>(patients);

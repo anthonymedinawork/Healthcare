@@ -1,4 +1,5 @@
-﻿using HealthcareApp.Services.ViewModels;
+﻿using HealthcareApp.Data.Entities;
+using HealthcareApp.Services.ViewModels;
 
 namespace HealthcareApp.Services.Interfaces
 {
@@ -9,5 +10,7 @@ namespace HealthcareApp.Services.Interfaces
         Task DeleteAsync(string id);
         Task<MedicationViewModel> GetByIdAsync(string id);
         Task<List<MedicationViewModel>> GetAllAsync();
+        Task LoadDbAsync();
+        Task DeleteTableDataAsync();
     }
 }

@@ -33,7 +33,16 @@ namespace HealthcareApp.Data
 
             //Attendance
             modelBuilder.Entity<Attendance>()
-                .HasMany<Medication>(a => a.Medications);
+                .HasOne<Medication>(a => a.Medication);
+
+            modelBuilder.Entity<Attendance>()
+                .HasOne<Patient>(a => a.Patient)
+                .WithMany(p => p.Attendances)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Attendance>()
+                .HasOne<Doctor>(a => a.Doctor)
+                .WithMany();
 
             //Appointment
             modelBuilder.Entity<Appointment>()

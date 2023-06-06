@@ -14,7 +14,8 @@ namespace HealthcareApp.Controllers
         private readonly IPatientService _patientervice;
         private readonly string username;
 
-        public AppointmentController(IAppointmentService service, IDoctorService doctorService, IPatientService patientService, IHttpContextAccessor http)
+        public AppointmentController(IAppointmentService service, IDoctorService doctorService, 
+            IPatientService patientService, IHttpContextAccessor http)
         {
             _service = service;
             _doctorService = doctorService;

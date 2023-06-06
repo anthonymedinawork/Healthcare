@@ -4,10 +4,10 @@ namespace HealthcareApp.Services.Interfaces
 {
     public interface IAttendanceService
     {
-        Task CreateAsync(AttendanceViewModel attendance);
+        Task CreateAsync(string requesterName, AttendanceViewModel attendance);
         Task UpdateAsync(AttendanceViewModel attendance);
         Task DeleteAsync(string id);
         Task<AttendanceViewModel> GetByIdAsync(string id);
-        Task<List<AttendanceViewModel>> GetAllAsync();
+        Task<List<AttendanceViewModel>> GetAllAsync(string requesterName);
     }
 }

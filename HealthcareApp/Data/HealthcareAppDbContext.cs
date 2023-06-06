@@ -33,7 +33,8 @@ namespace HealthcareApp.Data
 
             //Attendance
             modelBuilder.Entity<Attendance>()
-                .HasOne<Medication>(a => a.Medication);
+                .HasOne<Medication>(a => a.Medication)
+                .WithMany();
 
             modelBuilder.Entity<Attendance>()
                 .HasOne<Patient>(a => a.Patient)

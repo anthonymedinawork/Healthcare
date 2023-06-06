@@ -5,7 +5,7 @@ namespace HealthcareApp.Services.Interfaces
 {
     public interface IAppointmentService
     {
-        Task CreateAsync(string requesterId, AppointmentViewModel appointment);
+        Task CreateAsync(string requesterName, AppointmentViewModel appointment);
         Task UpdateAsync(AppointmentViewModel appointment);
         Task DeleteAsync(string id);
         Task<AppointmentViewModel> GetByIdAsync(string id);

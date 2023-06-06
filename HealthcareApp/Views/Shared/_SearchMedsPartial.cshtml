@@ -1,0 +1,8 @@
+﻿@using HealthcareApp.Services.ViewModels
+
+@model MedicationsSelectListModel
+
+<div class="form-group mb-2">
+    <label asp-for="SelectedMedication" class="control-label">Please select the prescribed medication</label>
+    <select class="form-select" asp-for="SelectedMedication" asp-items="Model.MedicationsSelectList"></select>
+</div>

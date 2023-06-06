@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.Models;
+using HealthcareApp.Data.Enums;
 using HealthcareApp.Repositories.Interfaces;
 using HealthcareApp.Services.Interfaces;
 using HealthcareApp.Services.ViewModels;
@@ -12,16 +13,34 @@ namespace HealthcareApp.Services
     {
         private readonly IAttendanceRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
+        private readonly IDoctorService _doctorService;
+        private readonly IPatientService _patientService;
+        private readonly IMedicationService _medicationService;
 
-        public AttendanceService(IAttendanceRepository repository, IMapper mapper)
+        public AttendanceService(IAttendanceRepository repository, IMapper mapper, IUserService userService, 
+            IDoctorService doctorService, IPatientService patientService, IMedicationService medService)
         {
-            this._repository = repository;
-            this._mapper = mapper;
+            _repository = repository;
+            _mapper = mapper;
+            _userService = userService;
+            _doctorService = doctorService;
+            _patientService = patientService;
+            _medicationService = medService;
         }
 
-        public async Task CreateAsync(AttendanceViewModel model)
+        public async Task CreateAsync(string requesterName, AttendanceViewModel model)
         {
+            var user = await _userService.GetByUserNameAsync(requesterName);
+
+            var doctor = await _doctorService.GetByUserAccountIdAsync(user.Id);
+
+            model.DoctorId = doctor.Id;
+
             Attendance attendance = _mapper.Map<Attendance>(model);
+
+            attendance.Id = Guid.NewGuid().ToString();
+            attendance.Medication = null;
 
             await _repository.CreateAsync(attendance);
         }
@@ -35,11 +54,43 @@ namespace HealthcareApp.Services
             await _repository.DeleteAsync(id);
         }
 
-        public async Task<List<AttendanceViewModel>> GetAllAsync()
+        public async Task<List<AttendanceViewModel>> GetAllAsync(string requesterName)
         {
-            var attendances = await _repository.GetAll().ToListAsync();
+            var user = await _userService.GetByUserNameAsync(requesterName);
 
-            return _mapper.Map<List<AttendanceViewModel>>(attendances);
+            List<Attendance> attendances = new();
+
+            if (user.Role == Role.User)
+            {
+                var patientAttendancesToView = await _patientService.GetByUserAccountIdAsync(user.Id);
+
+                attendances = await _repository.GetAll().Where(a => a.PatientId == patientAttendancesToView.Id).ToListAsync();
+            }
+            else if (user.Role == Role.Moderator)
+            {
+                var doctorAttendancesToView = await _doctorService.GetByUserAccountIdAsync(user.Id);
+
+                attendances = await _repository.GetAll().Where(a => a.DoctorId == doctorAttendancesToView.Id).ToListAsync();
+            }
+            else
+            {
+                attendances = await _repository.GetAll().ToListAsync();
+            }
+
+            var mapAttendances = _mapper.Map<List<AttendanceViewModel>>(attendances);
+
+            foreach (var attendance in mapAttendances)
+            {
+                var doctor = await _doctorService.GetByIdAsync(attendance.DoctorId);
+                var patient = await _patientService.GetByIdAsync(attendance.PatientId);
+                var medication = await _medicationService.GetByIdAsync(attendance.MedicationId);
+
+                attendance.PatientName = patient.FirstName + " " + patient.LastName;
+                attendance.DoctorName = doctor.FirstName + " " + doctor.LastName;
+                attendance.MedicationName = medication.Name;
+            }
+
+            return mapAttendances;
         }
 
         public async Task<List<AttendanceViewModel>> GetAllAsync(Expression<Func<AttendanceViewModel, bool>> filter)
@@ -57,9 +108,20 @@ namespace HealthcareApp.Services
 
             if (attendance is null)
             {
-                throw new ArgumentNullException("No such attendance exists!");
+                throw new KeyNotFoundException(nameof(id));
             }
-            return _mapper.Map<AttendanceViewModel>(attendance);
+
+            var mapAttendance = _mapper.Map<AttendanceViewModel>(attendance);
+
+            var doctor = await _doctorService.GetByIdAsync(mapAttendance.DoctorId);
+            var patient = await _patientService.GetByIdAsync(mapAttendance.PatientId);
+            var medication = await _medicationService.GetByIdAsync(mapAttendance.MedicationId);
+
+            mapAttendance.PatientName = patient.FirstName + " " + patient.LastName;
+            mapAttendance.DoctorName = doctor.FirstName + " " + doctor.LastName;
+            mapAttendance.MedicationName = medication.Name;
+
+            return mapAttendance;
         }
 
         public async Task UpdateAsync(AttendanceViewModel model)

@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using HealthcareApp.Contracts.Extensions;
 using HealthcareApp.Services.Interfaces;
 using HealthcareApp.Services.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -11,24 +12,44 @@ namespace HealthcareApp.Controllers
         private readonly IAttendanceService _service;
         private readonly IMedicationService _medicationService;
         private readonly IPatientService _patientService;
+        private readonly string username;
 
-        public AttendanceController(IAttendanceService service, IMedicationService medicationService, IPatientService patientService)
+        public AttendanceController(IAttendanceService service, IMedicationService medicationService, 
+            IPatientService patientService, IHttpContextAccessor http)
         {
             _service = service;
             _medicationService = medicationService;
             _patientService = patientService;
+            username = http.GetRequesterId();
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            List<AttendanceViewModel> attendances = await _service.GetAllAsync();
+            List<AttendanceViewModel> attendances = await _service.GetAllAsync(username);
 
             return View(attendances);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create(string searchString)
+        public async Task<IActionResult> Details(string id)
+        {
+            try
+            {
+                AttendanceViewModel attendance = await _service.GetByIdAsync(id);
+
+                return View(attendance);
+            }
+            catch (ArgumentException e)
+            {
+                ViewData["Message"] = e.Message;
+
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
         {
             var meds = await _medicationService.GetAllAsync();
             var patients = await _patientService.GetAllAsync();
@@ -39,12 +60,7 @@ namespace HealthcareApp.Controllers
             model.MedicationsList.MedicationsSelectList = new List<SelectListItem>();
 
             model.PatientsList = new PatientsSelectListModel();
-            model.PatientsList.PatientsSelectList = new List<SelectListItem>();
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                meds = meds.Where(s => s.Indication.ToLower().Contains(searchString)).ToList();
-            }
+            model.PatientsList.PatientsSelectList = new List<SelectListItem>();           
             
             foreach (var item in meds)
             {
@@ -71,7 +87,13 @@ namespace HealthcareApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AttendanceViewModel attendance)
         {
-            await _service.CreateAsync(attendance);
+            var selectedPatient = attendance.PatientsList.SelectedPatient;
+            attendance.PatientId = selectedPatient;
+
+            var selectedMedication = attendance.MedicationsList.SelectedMedication;
+            attendance.MedicationId = selectedMedication;
+
+            await _service.CreateAsync(username, attendance);
 
             return RedirectToAction(nameof(Index));
         }

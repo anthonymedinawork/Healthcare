@@ -24,18 +24,16 @@
             </div>
 
             <div class="form-group mb-2">
-                <form asp-controller="Attendance" asp-action="Create" method="get">
-                    <p>
-                        Diagnosis: <input type="text" name="SearchString" />
-                        <input type="submit" value="Search" />
-                    </p>
-                </form>
+                <label asp-for="Diagnosis" class="control-label"></label>
+                <input asp-for="Diagnosis" class="form-control" />
+                <span asp-validation-for="Diagnosis" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group mb-2">
                 <label asp-for="MedicationsList.SelectedMedication" class="control-label">Please select the prescribed medication</label>
                 <select class="form-select" asp-for="MedicationsList.SelectedMedication" asp-items="Model.MedicationsList.MedicationsSelectList"></select>
             </div>
+                       
             <div class="form-group mb-2">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -52,3 +50,4 @@
     await Html.RenderPartialAsync("_ValidationScriptsPartial");
 }
 }
+

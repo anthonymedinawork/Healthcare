@@ -19,13 +19,14 @@ namespace HealthcareApp.Services
         private readonly IDoctorService _doctorService;
         private readonly IUserService _userService;
 
-        public AppointmentService(IAppointmentRepository repository, IMapper mapper, IPatientService patientService, IUserService userService, IDoctorService doctorService)
+        public AppointmentService(IAppointmentRepository repository, IMapper mapper, 
+            IPatientService patientService, IUserService userService, IDoctorService doctorService)
         {
-            this._repository = repository;
-            this._mapper = mapper;
-            this._patientService = patientService;
-            this._doctorService = doctorService;
-            this._userService = userService;
+            _repository = repository;
+            _mapper = mapper;
+            _patientService = patientService;
+            _doctorService = doctorService;
+            _userService = userService;
         }
 
         public async Task CreateAsync(string requesterName, AppointmentViewModel model)
@@ -102,6 +103,7 @@ namespace HealthcareApp.Services
             {
                 var doctor = await _doctorService.GetByIdAsync(appointment.DoctorId);
                 var patient = await _patientService.GetByIdAsync(appointment.PatientId);
+
                 appointment.PatientName = patient.FirstName + " " + patient.LastName;
                 appointment.DoctorName = doctor.FirstName + " " + doctor.LastName;
             }
@@ -119,8 +121,10 @@ namespace HealthcareApp.Services
             }
 
             var mapAppointment = _mapper.Map<AppointmentViewModel>(appointment);
+
             var doctor = await _doctorService.GetByIdAsync(mapAppointment.DoctorId);
             var patient = await _patientService.GetByIdAsync(mapAppointment.PatientId);
+
             mapAppointment.PatientName = patient.FirstName + " " + patient.LastName;
             mapAppointment.DoctorName = doctor.FirstName + " " + doctor.LastName;
 

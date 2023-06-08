@@ -1,6 +1,7 @@
 ﻿using Data.Models;
 using HealthcareApp.Data;
 using HealthcareApp.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace HealthcareApp.Repositories
@@ -58,6 +59,8 @@ namespace HealthcareApp.Repositories
             }
 
             _context.Entry(dbEntity).CurrentValues.SetValues(entity);
+
+            _context.Entry(dbEntity).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
         }

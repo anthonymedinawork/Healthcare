@@ -52,6 +52,11 @@ namespace HealthcareApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public ActionResult ShowSuccessMessage()
+        {
+            return PartialView(@"~/Views/Shared/_SuccessPartial.cshtml");
+        }
+
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
@@ -79,9 +84,18 @@ namespace HealthcareApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AppointmentViewModel appointment)
         {
-            await _service.CreateAsync(username, appointment);
+            try
+            {
+                await _service.CreateAsync(username, appointment);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ShowSuccessMessage));
+            }
+            catch (ArgumentException e)
+            {
+                ViewData["Message"] = e.Message;
+
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         [HttpGet]
@@ -109,7 +123,7 @@ namespace HealthcareApp.Controllers
             {
                 await _service.DeleteAsync(id);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ShowSuccessMessage));
             }
             catch (ArgumentException e)
             {

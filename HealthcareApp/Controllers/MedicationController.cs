@@ -50,7 +50,7 @@ namespace HealthcareApp.Controllers
             {
                 await _service.DeleteAsync(id);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ShowSuccessMessage));
             }
             catch (ArgumentException e)
             {
@@ -60,6 +60,11 @@ namespace HealthcareApp.Controllers
             }
         }
 
+        public ActionResult ShowSuccessMessage()
+        {
+            return PartialView(@"~/Views/Shared/_SuccessPartial.cshtml");
+        }
+
         [HttpPost]
         public async Task<IActionResult> LoadDb()
         {
@@ -67,7 +72,7 @@ namespace HealthcareApp.Controllers
             {
                 await _service.LoadDbAsync();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ShowSuccessMessage));
             }
             catch (ArgumentException e)
             {
@@ -84,7 +89,7 @@ namespace HealthcareApp.Controllers
             {
                 await _service.DeleteTableDataAsync();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ShowSuccessMessage));
             }
             catch (ArgumentException e)
             {

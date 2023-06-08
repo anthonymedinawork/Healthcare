@@ -87,15 +87,30 @@ namespace HealthcareApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AttendanceViewModel attendance)
         {
-            var selectedPatient = attendance.PatientsList.SelectedPatient;
-            attendance.PatientId = selectedPatient;
+            try
+            {
+                var selectedPatient = attendance.PatientsList.SelectedPatient;
+                attendance.PatientId = selectedPatient;
 
-            var selectedMedication = attendance.MedicationsList.SelectedMedication;
-            attendance.MedicationId = selectedMedication;
+                var selectedMedication = attendance.MedicationsList.SelectedMedication;
+                attendance.MedicationId = selectedMedication;
 
-            await _service.CreateAsync(username, attendance);
+                await _service.CreateAsync(username, attendance);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ShowSuccessMessage));
+            }
+
+            catch (ArgumentException e)
+            {
+                ViewData["Message"] = e.Message;
+
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        public ActionResult ShowSuccessMessage()
+        {
+            return PartialView(@"~/Views/Shared/_SuccessPartial.cshtml");
         }
 
         [HttpGet]
@@ -123,7 +138,7 @@ namespace HealthcareApp.Controllers
             {
                 await _service.DeleteAsync(id);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ShowSuccessMessage));
             }
             catch (ArgumentException e)
             {

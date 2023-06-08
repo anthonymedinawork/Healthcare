@@ -70,7 +70,11 @@
                         <a asp-action="Approve" asp-route-id="@appointment.Id" type="button" class="btn btn-primary">Approve</a>
                         <a asp-action="Delete" asp-route-id="@appointment.Id" type="button" class="btn btn-secondary">Delete</a>
                     }
-                    @appointment.IsApproved
+                    else
+                    {
+                        <div>@appointment.IsApproved</div>
+                    }
+                    
                 </td>
                 <td>
                     @appointment.Date

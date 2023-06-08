@@ -21,9 +21,14 @@ namespace HealthcareApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             List<PatientViewModel> patients = await _service.GetAllAsync(username);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                patients = patients.Where(s => s.FirstName.ToLower()!.Contains(searchString.ToLower())).ToList();
+            }
 
             return View(patients);
         }
@@ -70,12 +75,27 @@ namespace HealthcareApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PatientViewModel patient)
         {
-            var selectedDoctor = patient.DoctorsList.SelectedDoctor;
-            patient.PersonalDoctorId = selectedDoctor;
-            
-            await _service.CreateAsync(patient);
+            try
+            {
+                var selectedDoctor = patient.DoctorsList.SelectedDoctor;
+                patient.PersonalDoctorId = selectedDoctor;
 
-            return RedirectToAction(nameof(Index));
+                await _service.CreateAsync(patient);
+
+                return RedirectToAction(nameof(ShowSuccessMessage));
+            }
+
+            catch (ArgumentException e)
+            {
+                ViewData["Message"] = e.Message;
+
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        public ActionResult ShowSuccessMessage()
+        {
+            return PartialView(@"~/Views/Shared/_SuccessPartial.cshtml");
         }
 
         [HttpGet]
@@ -105,12 +125,21 @@ namespace HealthcareApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(PatientViewModel patient)
         {
-            var selectedDoctor = patient.DoctorsList.SelectedDoctor;
-            patient.PersonalDoctorId = selectedDoctor;
+            try
+            {
+                var selectedDoctor = patient.DoctorsList.SelectedDoctor;
+                patient.PersonalDoctorId = selectedDoctor;
 
-            await _service.UpdateAsync(patient);
+                await _service.UpdateAsync(patient);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ShowSuccessMessage));
+            }
+            catch (ArgumentException e)
+            {
+                ViewData["Message"] = e.Message;
+
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         [HttpGet]
@@ -137,7 +166,7 @@ namespace HealthcareApp.Controllers
             {
                 await _service.DeleteAsync(id);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ShowSuccessMessage));
             }
             catch (ArgumentException e)
             {

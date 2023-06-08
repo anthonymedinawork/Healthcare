@@ -7,7 +7,7 @@
     ViewData["Title"] = "List attendances";
 }
 
-@if(User.IsInRole("Moderator") || User.IsInRole("Admin"))
+@if(User.IsInRole("Moderator"))
 {
     <div class="mt-5 mb-2">
         <a asp-action="Create">Create new</a>

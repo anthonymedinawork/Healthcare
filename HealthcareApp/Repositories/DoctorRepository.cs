@@ -1,9 +1,7 @@
 ﻿using Data.Models;
 using HealthcareApp.Data;
 using HealthcareApp.Repositories.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Principal;
 
 namespace HealthcareApp.Repositories
 {
@@ -38,6 +36,31 @@ namespace HealthcareApp.Repositories
         private async Task CascadeDelete(Doctor entity)
         {
             var account = await _context.Set<User>().FindAsync(entity.UserAccountId);
+
+            var appointments = await _context.Set<Appointment>()
+                .Where(a => a.DoctorId == entity.Id)
+                .ToListAsync();
+
+            var attendances = await _context.Set<Attendance>()
+                .Where(a => a.DoctorId == entity.Id)
+                .ToListAsync();
+
+            var patients = await _context.Set<Patient>()
+                .Where(p => p.PersonalDoctorId == entity.Id)
+                .ToListAsync();
+
+            foreach (var patient in patients)
+            {
+                var patientAccount = await _context.Set<User>().FindAsync(patient.UserAccountId);
+
+                _context.Set<User>().Remove(patientAccount);
+            }
+
+            appointments.ForEach(a => _context.Set<Appointment>().Remove(a));
+
+            attendances.ForEach(a => _context.Set<Attendance>().Remove(a));
+
+            patients.ForEach(p => _context.Set<Patient>().Remove(p));
 
             _context.Set<User>().Remove(account);
         }

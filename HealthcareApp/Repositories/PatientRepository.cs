@@ -37,6 +37,18 @@ namespace HealthcareApp.Repositories
         {
             var account = await _context.Set<User>().FindAsync(entity.UserAccountId);
 
+            var appointments = await _context.Set<Appointment>()
+                .Where(a => a.PatientId == entity.Id)
+                .ToListAsync();
+
+            var attendances = await _context.Set<Attendance>()
+                .Where(a => a.PatientId == entity.Id)
+                .ToListAsync();
+
+            appointments.ForEach(a => _context.Set<Appointment>().Remove(a));
+
+            attendances.ForEach(a => _context.Set<Attendance>().Remove(a));
+
             _context.Set<User>().Remove(account);
         }
     }

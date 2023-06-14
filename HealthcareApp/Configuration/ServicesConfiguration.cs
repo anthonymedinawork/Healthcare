@@ -3,6 +3,11 @@ using HealthcareApp.Repositories;
 using HealthcareApp.Services.Interfaces;
 using HealthcareApp.Services;
 using Microsoft.AspNetCore.Authentication;
+using Data.Models;
+using HealthcareApp.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace HealthcareApp.Configuration
 {
@@ -27,6 +32,24 @@ namespace HealthcareApp.Configuration
             builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
+
+            builder.Services.AddControllersWithViews();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        }
+
+        public static void ConfigureDatabase(this WebApplicationBuilder builder)
+        {
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            builder.Services.AddDbContext<HealthcareAppDbContext>(options =>
+                options.UseSqlServer(connectionString));
+
+            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+            builder.Services
+                .AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<HealthcareAppDbContext>().AddDefaultTokenProviders();
         }
     }
 }

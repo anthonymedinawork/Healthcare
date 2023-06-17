@@ -96,8 +96,7 @@ namespace HealthcareApp.Controllers
                 ViewData["Message"] = e.Message;
 
                 return RedirectToAction(nameof(Index));
-            }
-            
+            }         
         }
 
         [HttpGet]

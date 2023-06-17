@@ -99,6 +99,36 @@ namespace HealthcareApp.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Edit(string Id)
+        {
+            var appointment = await _service.GetByIdAsync(Id);
+
+            return View(appointment);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(AppointmentViewModel appointment)
+        {
+            try
+            {
+                var updatedAppointment = await _service.GetByIdAsync(appointment.Id);
+
+                updatedAppointment.Date = appointment.Date;
+
+                await _service.UpdateAsync(updatedAppointment);
+
+                return RedirectToAction(nameof(ShowSuccessMessage));
+            }
+            catch (Exception e)
+            {
+                ViewData["Message"] = e.Message;
+
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
             try

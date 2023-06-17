@@ -49,10 +49,20 @@
                 <td>
                     @appointment.Date
                 </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@appointment.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@appointment.Id">Delete</a>
-                </td>
+                @if(appointment.IsApproved)
+                {
+                    <td>
+                        <a asp-action="Details" asp-route-id="@appointment.Id">Details</a>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@appointment.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@appointment.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@appointment.Id">Delete</a>
+                    </td>
+                }
             </tr>
         }
         if(User.IsInRole("Moderator"))

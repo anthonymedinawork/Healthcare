@@ -1,24 +1,24 @@
-## Какво представлява проектът?
-Проектът представлява сайт на болница, в който потребителите могат да разглеждат информация относно болницата, своите посещения и часове с доктори.
-Проектът поддържа три роли: Admin, Moderator и User. 
+## About
+This MVC project is an ASP.NET Core based website about a hospital management system where users can view information about the hospital, their visits and doctor appointments.
+The project supports three roles: Admin, Moderator and User.
 
-## Роли
-Администраторът има достъп до абсолютно всичко в сайта - може да преглежда, създава, изтрива и обновява всички обекти в сайта, за които е имплементирана такава функционалност. Той може да създава също докторски акаунти и такива на пациенти. Всяка регистрация в сайта създава акаунт на обикновен потребител (пациент), а докторските акаунти се създават само от администратора. 
-Модератори са всички доктори от сайта, като те имат достъп само до своите пациенти, часове и посещения и могат да ги преглеждат, изтриват и създават нови. Докторите имат достъп и до цялата база от данни на лекарствата, за които е използвано външно API като източник на информация. 
-Пациентският акаунт дава възможност за преглеждане на личните часовете и посещения с личния лекар, както и изтриване на създадени часове. 
-Хората без акаунт в сайта имат достъп само до Home и About страниците на сайта.
+## Roles
+The Administrator has access to absolutely everything on the site - he can view, create, delete and update all objects on the site for which such functionality is implemented. He can also create doctor and patient accounts. Each registration on the site creates an account of an ordinary user (patient), and doctor accounts are created only by the administrator.
+Moderators are all doctors on the site, they only have access to their patients, appointments and visits and can view, delete and create new ones. Doctors also have access to the entire database of drugs for which an external API is used as a source of information.
+The Patient account allows viewing personal appointments and visits with the GP, as well as deleting created appointments.
+People without an account on the site can only access the Home and About pages.
 
-## Меню
-Менюто съдържа линкове към Home, About, Doctors, Patients, Appointments, Attendances и Medications
-### Home и About
-Съдържат основна информация за сайта на болницата
-### Doctors
-Съдържа списък с всички доктори в системата и основната информация за тях, форма за създаване на нов доктор, за обновяване на информация, за изтриване и детайли
-### Patients
-Съдържа списък с всички пациенти в системата и основната информация за тях, форма за създаване на нов пациент, за обновяване на информация, за изтриване и детайли
-### Appointments
-Съдържа списък с всички запазени часове в системата и основната информация за тях, форма за създаване на нов час, за изтриване и детайли
-### Attendances
-Съдържа списък с всички направени посещения в системата и основната информация за тях, форма за създаване на ново посещение, за изтриване и детайли
-### Medications
-Съдържа списък с всички лекарства в базата данни, като информацията е получена от външно API
+## Menu
+The menu contains links to Home, About, Doctors, Patients, Appointments, Attendances and Medications
+### Home and About page
+They contain basic information about the hospital's website
+### Doctors page
+Contains a list of all doctors in the system and their basic information, form to create a new doctor, to update information, to delete and details
+### Patients page
+Consists of a list of all patients in the system and their basic information, a form to create a new patient, to update information, to delete and details
+### Appointments page
+Contains a list of all saved times in the system and their basic information, form to create a new time, to delete and details
+### Attendances page
+It consists of a list of all visits made to the system and the basic information about them, a form for creating a new visit, for deletion and details
+### Medications page
+Contains a list of all drugs in the database, with information obtained from an external API
